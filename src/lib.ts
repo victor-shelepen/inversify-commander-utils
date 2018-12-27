@@ -1,7 +1,7 @@
-import {IControllerMetadata, TActionsMetadata, TControllersMetadata, TYPE} from "./declaration";
+import {IController, IControllerMetadata, TActionsMetadata, TControllersMetadata, TYPE} from "./declaration";
 import {METADATA_KEY} from "./constant";
-import * as commander  from 'commander';
-import {Command} from  'commander';
+import * as commander  from "commander";
+import {Command} from  "commander";
 import {Container} from "inversify";
 
 export function getControllersMetadata(): TControllersMetadata {
@@ -11,22 +11,33 @@ export function getControllersMetadata(): TControllersMetadata {
     );
 }
 
-export function getControllerMetadata(controller: any): IControllerMetadata {
+export function getControllerPrototypeMetadata(controller: IController): IControllerMetadata {
     return Reflect.getMetadata(
         METADATA_KEY.controller,
         controller
     );
 }
 
-export function getActionsMetadata(controller: any): TActionsMetadata {
+export function getActionsPrototypeMetadata(controller: IController): TActionsMetadata {
     return Reflect.getMetadata(
         METADATA_KEY.action,
         controller
     );
 }
 
+export function getControllerMetadata(instance: IController): IControllerMetadata {
+    return getControllerPrototypeMetadata(instance.constructor);
+}
+
+export function getActionsMetadata(controller: IController): TActionsMetadata {
+    return getActionsPrototypeMetadata(controller.constructor);
+}
+
+
 export function create(): Container {
     const container = new Container();
+    registerControllers(container);
+    build(commander, container);
 
     return container;
 }
@@ -45,20 +56,20 @@ export function registerControllers(container: Container) {
     });
 }
 
-export function build(commander: Command, container: Container) {
-    // const controllersMetadata = getControllersMetadata();
-    // controllersMetadata.forEach((controllerMetadata) => {
-    //    const actionsMetadata = getActionsMetadata(controllerMetadata.target);
-    //    actionsMetadata.forEach((actionMetadata) => {
-    //        commander
-    //            .name(actionMetadata.name)
-    //            .action(() => {
-    //
-    //            })
-    //    });
-    //
-    //
-    // });
+export function build(_commander: Command, container: Container) {
+    const controllers = container.getAll<IController>(TYPE.Controller);
+    controllers.forEach((controllerContainer) => {
+        const controllerMetadata = getControllerMetadata(controllerContainer);
+        const actionsMetadata = getActionsMetadata(controllerContainer);
+        actionsMetadata.forEach((actionMetadata) => {
+            const name = controllerMetadata.group + (controllerMetadata.group ? ":" : "") + actionMetadata.name;
+            const command = _commander.command(name);
+            command
+                .action((...args) => {
+                    controllerContainer[actionMetadata.key](...args);
+                });
+        });
+    });
 }
 
 export const DUPLICATED_CONTROLLER_NAME = (name: string) =>

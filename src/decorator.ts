@@ -2,7 +2,7 @@ import { inject, injectable, decorate } from "inversify";
 import {METADATA_KEY} from "./constant";
 import {IActionMetadata, IControllerMetadata, IHandler, TActionsMetadata, TControllersMetadata} from "./declaration";
 
-export function controller(group='default') {
+export function controller(group= "default") {
     return function (target: any) {
         let currentMetadata: IControllerMetadata = {
             group,

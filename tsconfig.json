@@ -14,5 +14,7 @@
     "preserveConstEnums": true,
     "suppressImplicitAnyIndexErrors": true,
     "strictNullChecks": true,
+    "composite": true,
+    "codeclarationMap": true
   }
 }

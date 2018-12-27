@@ -6,20 +6,20 @@ export const TYPE = {
 export interface IController {}
 
 export interface IHandler {
-    (): void
+    (): void;
 }
 
 export interface IControllerMetadata {
-    group: string
-    target: any
+    group: string;
+    target: any;
 }
 
 export type TControllersMetadata = IControllerMetadata[];
 
 export interface IActionMetadata {
-    name: string,
-    key: string,
-    target: any
+    name: string;
+    key: string;
+    target: any;
 }
 
 export type TActionsMetadata = IActionMetadata[];

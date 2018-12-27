@@ -1,4 +1,4 @@
-import * as commander from 'commander'
+import * as commander from "commander";
 import {METADATA_KEY} from "./constant";
 import {IControllerMetadata, TActionsMetadata, TControllersMetadata} from "./declaration";
 

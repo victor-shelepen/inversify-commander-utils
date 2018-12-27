@@ -4,7 +4,9 @@
   "description": "Some utilities for the development of commander with Inversify",
   "main": "lib/index.js",
   "scripts": {
-    "test": "@todo look at another projects."
+    "test": "@todo look at another projects.",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint-fix": "tslint -c tslint.json --fix 'src/**/*.ts'"
   },
   "repository": {
     "type": "git",
