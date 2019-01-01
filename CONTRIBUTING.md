@@ -6,3 +6,7 @@
 ```
 -r "node_modules/reflect-metadata/Reflect.js" --require ts-node/register
 ```
+
+# NPM releasing.
+```
+npm-run tsc --outDir lib

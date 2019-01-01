@@ -15,6 +15,6 @@
     "suppressImplicitAnyIndexErrors": true,
     "strictNullChecks": true,
     "composite": true,
-    "codeclarationMap": true
+    "declarationMap": true
   }
 }
