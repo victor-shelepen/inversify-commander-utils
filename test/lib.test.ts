@@ -1,11 +1,8 @@
 import { expect } from 'chai';
 import {action, controller} from "../src/decorator";
-import {IController, TActionsMetadata, TYPE} from "../src/declaration";
+import {IController, TYPE} from "../src/declaration";
 import {
     build, create,
-    getActionsPrototypeMetadata,
-    getControllerPrototypeMetadata,
-    getControllersMetadata,
     registerControllers
 } from "../src/lib";
 import {Command} from "commander";
