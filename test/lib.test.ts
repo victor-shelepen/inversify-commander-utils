@@ -2,30 +2,33 @@ import { expect } from 'chai';
 import {action, controller} from "../src/decorator";
 import {IController, TYPE} from "../src/declaration";
 import {
-    build, create,
+    build, cleanUpMetadata, create,
     registerControllers
 } from "../src/lib";
 import {Command} from "commander";
 import * as commander from 'commander';
 import {Container} from "inversify";
 
-describe('Test', () => {
-
+describe('Lib', () => {
     let strResult = '';
 
-    @controller('testController')
-    class TestController implements IController {
+    before(() => {
+        cleanUpMetadata();
 
-        @action('aTestAction')
-        testA() {
-            strResult = 'testController:aTestAction'
-        }
+        @controller('testController')
+        class TestController implements IController {
 
-        @action('bTestAction')
-        testB() {
-            strResult = 'testController:bTestAction'
+            @action('aTestAction')
+            testA() {
+                strResult = 'testController:aTestAction'
+            }
+
+            @action('bTestAction')
+            testB() {
+                strResult = 'testController:bTestAction'
+            }
         }
-    }
+    });
     let _commander = new Command();
 
     it('Controller and action metadata  in Controller', () => {

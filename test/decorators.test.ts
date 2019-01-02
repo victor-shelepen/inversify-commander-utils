@@ -1,27 +1,35 @@
 import { expect } from 'chai';
 import {action, controller} from "../src/decorator";
 import {
+    cleanUpMetadata,
     getActionsMetadata,
     getActionsPrototypeMetadata, getControllerMetadata,
     getControllerPrototypeMetadata,
     getControllersMetadata
 } from "../src/lib";
 
-describe('Test', () => {
+describe('Decorators', () => {
+    let controllerInstance!: any;
+    let TestController!: any;
 
-    @controller('test')
-    class TestController {
+    before(() => {
+        cleanUpMetadata();
 
-        @action('test1')
-        test1() {
+        @controller('test')
+        class _TestController {
+
+            @action('test1')
+            test1() {
+            }
+
+            @action('test2')
+            test2() {
+            }
         }
 
-        @action('test2')
-        test2() {
-        }
-    }
-
-    const controllerInstance = new TestController();
+        TestController = _TestController
+        controllerInstance = new TestController();
+    });
 
     it('Controller and action metadata  in Controller', () => {
         const controllersMetadata = getControllersMetadata();

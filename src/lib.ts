@@ -72,5 +72,13 @@ export function build(_commander: Command, container: Container) {
     });
 }
 
+export function cleanUpMetadata() {
+    Reflect.defineMetadata(
+        METADATA_KEY.controller,
+        [],
+        Reflect
+    );
+}
+
 export const DUPLICATED_CONTROLLER_NAME = (name: string) =>
     `Two controllers cannot have the same name: ${name}`;
