@@ -1,0 +1,8 @@
+.idea
+src
+test
+.travis.yml
+gulpfile.js
+CONTRIBUTING.md
+tsconfig.json
+tslint.json
