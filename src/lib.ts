@@ -1,72 +1,72 @@
-import {IController, IControllerMetadata, TActionsMetadata, TControllersMetadata, TYPE} from "./declaration";
+import {IGroup, IGroupMetadata, TActionsMetadata, TGroupsMetadata, TYPE} from "./declaration";
 import {METADATA_KEY} from "./constant";
 import * as commander  from "commander";
 import {Command} from  "commander";
 import {Container} from "inversify";
 
-export function getControllersMetadata(): TControllersMetadata {
+export function getGroupsMetadata(): TGroupsMetadata {
     return Reflect.getMetadata(
-        METADATA_KEY.controller,
+        METADATA_KEY.group,
         Reflect
     );
 }
 
-export function getControllerPrototypeMetadata(controller: IController): IControllerMetadata {
+export function getGroupPrototypeMetadata(group: IGroup): IGroupMetadata {
     return Reflect.getMetadata(
-        METADATA_KEY.controller,
-        controller
+        METADATA_KEY.group,
+        group
     );
 }
 
-export function getActionsPrototypeMetadata(controller: IController): TActionsMetadata {
+export function getActionsPrototypeMetadata(group: IGroup): TActionsMetadata {
     return Reflect.getMetadata(
         METADATA_KEY.action,
-        controller
+        group
     );
 }
 
-export function getControllerMetadata(instance: IController): IControllerMetadata {
-    return getControllerPrototypeMetadata(instance.constructor);
+export function getGroupMetadata(instance: IGroup): IGroupMetadata {
+    return getGroupPrototypeMetadata(instance.constructor);
 }
 
-export function getActionsMetadata(controller: IController): TActionsMetadata {
-    return getActionsPrototypeMetadata(controller.constructor);
+export function getActionsMetadata(group: IGroup): TActionsMetadata {
+    return getActionsPrototypeMetadata(group.constructor);
 }
 
 
 export function create(): Container {
     const container = new Container();
-    registerControllers(container);
+    registerGroups(container);
     build(commander, container);
 
     return container;
 }
 
-export function registerControllers(container: Container) {
-    const controllersMetadata = getControllersMetadata();
-    controllersMetadata.forEach((controllerMetadata) => {
-        const constructor = controllerMetadata.target;
+export function registerGroups(container: Container) {
+    const groupsMetadata = getGroupsMetadata();
+    groupsMetadata.forEach((groupMetadata) => {
+        const constructor = groupMetadata.target;
         const name = constructor.name;
-        if (container.isBoundNamed(TYPE.Controller, name)) {
+        if (container.isBoundNamed(TYPE.Group, name)) {
             throw new Error(DUPLICATED_CONTROLLER_NAME(name));
         }
-        container.bind(TYPE.Controller)
+        container.bind(TYPE.Group)
             .to(constructor)
             .whenTargetNamed(name);
     });
 }
 
 export function build(_commander: Command, container: Container) {
-    const controllers = container.getAll<IController>(TYPE.Controller);
-    controllers.forEach((controllerContainer) => {
-        const controllerMetadata = getControllerMetadata(controllerContainer);
-        const actionsMetadata = getActionsMetadata(controllerContainer);
+    const groups = container.getAll<IGroup>(TYPE.Group);
+    groups.forEach((groupContainer) => {
+        const groupMetadata = getGroupMetadata(groupContainer);
+        const actionsMetadata = getActionsMetadata(groupContainer);
         actionsMetadata.forEach((actionMetadata) => {
-            const name = controllerMetadata.group + (controllerMetadata.group ? ":" : "") + actionMetadata.name;
+            const name = groupMetadata.group + (groupMetadata.group ? ":" : "") + actionMetadata.name;
             const command = _commander.command(name);
             command
                 .action((...args) => {
-                    controllerContainer[actionMetadata.key](...args);
+                    groupContainer[actionMetadata.key](...args);
                 });
         });
     });
@@ -74,11 +74,11 @@ export function build(_commander: Command, container: Container) {
 
 export function cleanUpMetadata() {
     Reflect.defineMetadata(
-        METADATA_KEY.controller,
+        METADATA_KEY.group,
         [],
         Reflect
     );
 }
 
 export const DUPLICATED_CONTROLLER_NAME = (name: string) =>
-    `Two controllers cannot have the same name: ${name}`;
+    `Two groups cannot have the same name: ${name}`;

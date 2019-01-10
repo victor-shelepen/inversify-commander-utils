@@ -2,6 +2,6 @@
 export const name = "inversify-commander-utils";
 
 export const METADATA_KEY = {
-  controller: `${name}:controller`,
+  group: `${name}:group`,
   action: `${name}:action`
 };

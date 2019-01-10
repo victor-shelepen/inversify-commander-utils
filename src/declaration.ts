@@ -1,20 +1,20 @@
 export const TYPE = {
-    Controller: Symbol.for("Controller"),
+    Group: Symbol.for("Group"),
 };
 
 // @todo It is unused...
-export interface IController {}
+export interface IGroup {}
 
 export interface IHandler {
     (): void;
 }
 
-export interface IControllerMetadata {
+export interface IGroupMetadata {
     group: string;
     target: any;
 }
 
-export type TControllersMetadata = IControllerMetadata[];
+export type TGroupsMetadata = IGroupMetadata[];
 
 export interface IActionMetadata {
     name: string;

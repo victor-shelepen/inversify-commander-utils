@@ -1,31 +1,31 @@
 import { inject, injectable, decorate } from "inversify";
 import {METADATA_KEY} from "./constant";
-import {IActionMetadata, IControllerMetadata, IHandler, TActionsMetadata, TControllersMetadata} from "./declaration";
+import {IActionMetadata, IGroupMetadata, IHandler, TActionsMetadata, TGroupsMetadata} from "./declaration";
 
-export function controller(group= "default") {
+export function group(group= "default") {
     return function (target: any) {
-        let currentMetadata: IControllerMetadata = {
+        let currentMetadata: IGroupMetadata = {
             group,
             target
         };
         decorate(injectable(), target);
-        Reflect.defineMetadata(METADATA_KEY.controller, currentMetadata, target);
+        Reflect.defineMetadata(METADATA_KEY.group, currentMetadata, target);
 
         // We need to create an array that contains the metadata of all
-        // the controllers in the application, the metadata cannot be
-        // attached to a controller. It needs to be attached to a global
+        // the groups in the application, the metadata cannot be
+        // attached to a group. It needs to be attached to a global
         // We attach metadata to the Reflect object itself to avoid
         // declaring additonal globals. Also, the Reflect is avaiable
         // in both node and web browsers.
-        const previousMetadata: TControllersMetadata = Reflect.getMetadata(
-            METADATA_KEY.controller,
+        const previousMetadata: TGroupsMetadata = Reflect.getMetadata(
+            METADATA_KEY.group,
             Reflect
         ) || [];
 
         const newMetadata = [currentMetadata, ...previousMetadata];
 
         Reflect.defineMetadata(
-            METADATA_KEY.controller,
+            METADATA_KEY.group,
             newMetadata,
             Reflect
         );

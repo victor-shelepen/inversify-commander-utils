@@ -40,8 +40,8 @@ class TodoContainer {
 The group is represented as a container where we inject another container to.
 The injected container is available in actions of the group.
 ```ts
-@controller('printer')
-class TestController {
+@group('printer')
+class TestGroup {
 
     @inject(TodoContainer)
     public todoContainer!: TodoContainer;

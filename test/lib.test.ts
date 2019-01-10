@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import {action, controller} from "../src/decorator";
-import {IController, TYPE} from "../src/declaration";
+import {action, group} from "../src/decorator";
+import {IGroup, TYPE} from "../src/declaration";
 import {
     build, cleanUpMetadata, create,
-    registerControllers
+    registerGroups
 } from "../src/lib";
 import {Command} from "commander";
 import * as commander from 'commander';
@@ -15,40 +15,40 @@ describe('Lib', () => {
     before(() => {
         cleanUpMetadata();
 
-        @controller('testController')
-        class TestController implements IController {
+        @group('testGroup')
+        class TestGroup implements IGroup {
 
             @action('aTestAction')
             testA() {
-                strResult = 'testController:aTestAction'
+                strResult = 'testGroup:aTestAction'
             }
 
             @action('bTestAction')
             testB() {
-                strResult = 'testController:bTestAction'
+                strResult = 'testGroup:bTestAction'
             }
         }
     });
     let _commander = new Command();
 
-    it('Controller and action metadata  in Controller', () => {
+    it('Group and action metadata  in Group', () => {
         const container = new Container();
-        registerControllers(container);
-        const controllers = container.getAll<IController>(TYPE.Controller);
-        expect(controllers.length).above(0);
+        registerGroups(container);
+        const groups = container.getAll<IGroup>(TYPE.Group);
+        expect(groups.length).above(0);
         expect(true).eq(true);
         build(_commander, container)
     });
 
     it('Build', () => {
-        _commander.parse(['node', 'file.js', 'testController:aTestAction']);
-        expect(strResult).eq('testController:aTestAction');
+        _commander.parse(['node', 'file.js', 'testGroup:aTestAction']);
+        expect(strResult).eq('testGroup:aTestAction');
     });
 
     it('Create', () => {
         create();
-        commander.parse(['node', 'file.js', 'testController:bTestAction']);
-        expect(strResult).eq('testController:bTestAction');
+        commander.parse(['node', 'file.js', 'testGroup:bTestAction']);
+        expect(strResult).eq('testGroup:bTestAction');
     });
 
 });
