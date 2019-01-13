@@ -26,6 +26,14 @@ The `inversify-commander-utils` type definitions are included in the npm module 
 Please refer to the [InversifyJS documentation](https://github.com/inversify/InversifyJS#installation) to learn more about the installation process.
 
 ## Basics
+### Step 0: Imports for a tutorial below.
+```ts
+import 'reflect-metadata';
+import {group, action, build, registerGroups} from 'inversify-commander-utils';
+import {Container, inject, injectable} from 'inversify';
+import program from 'commander';
+```
+
 ### Step 1: Define containers
 
 ```ts
@@ -64,7 +72,8 @@ class TestGroup {
 ```ts
 const container = new Container();
 container.bind(TodoContainer).to(TodoContainer);
-build(commander, container);
+registerGroups(container);
+build(program, container);
 ```
 
 ### Step 4: Processing of arguments
