@@ -46,9 +46,15 @@ class TestGroup {
     @inject(TodoContainer)
     public todoContainer!: TodoContainer;
 
-    @action('A')
-    public testA() {
-        console.log(this.todoContainer.printA());
+    @action(
+        'A <parameter>',
+        [
+            { pattern: '-c, --count <mode>', description: 'Number of prints.' }
+        ]
+    )
+    public testA(parameter: string, command: any) {
+        console.log(this.todoContainer.printPaper());
+        console.log(parameter, command.count);
     }
 
 }
@@ -69,7 +75,7 @@ commander
 
 ### Step 5: Run it from the console 
 ```sh
-node ./src/cli.js printer:A
+node ./src/cli.js printer:A A4 -c 3
 ```
 
 ## P.S.
