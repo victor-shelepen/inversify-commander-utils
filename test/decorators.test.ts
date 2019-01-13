@@ -27,18 +27,18 @@ describe('Decorators', () => {
             }
         }
 
-        TestGroup = _TestGroup
+        TestGroup = _TestGroup;
         groupInstance = new TestGroup();
     });
 
     it('Group and action metadata  in Group', () => {
         const groupsMetadata = getGroupsMetadata();
-        const groupMetadataA = groupsMetadata.find((o) => o.group === 'test');
-        expect(groupMetadataA!.group).eq('test');
+        const groupMetadataA = groupsMetadata.find((o) => o.name === 'test');
+        expect(groupMetadataA!.name).eq('test');
 
         let groupMetadataB = getGroupPrototypeMetadata(TestGroup);
-        expect(groupMetadataB.group).eq('test');
-        expect(groupMetadataB.group).eq(groupMetadataA!.group);
+        expect(groupMetadataB.name).eq('test');
+        expect(groupMetadataB.name).eq(groupMetadataA!.name);
 
         let actionsMetadata = getActionsPrototypeMetadata(TestGroup);
         let test2MetaData = actionsMetadata.find((o) => o.name === 'test2');
@@ -46,8 +46,8 @@ describe('Decorators', () => {
 
         // Instance.
         groupMetadataB = getGroupMetadata(groupInstance);
-        expect(groupMetadataB.group).eq('test');
-        expect(groupMetadataB.group).eq(groupMetadataA!.group);
+        expect(groupMetadataB.name).eq('test');
+        expect(groupMetadataB.name).eq(groupMetadataA!.name);
 
         actionsMetadata = getActionsMetadata(groupInstance);
         test2MetaData = actionsMetadata.find((o) => o.name === 'test2');

@@ -10,16 +10,23 @@ export interface IHandler {
 }
 
 export interface IGroupMetadata {
-    group: string;
+    name: string;
     target: any;
 }
 
 export type TGroupsMetadata = IGroupMetadata[];
 
+export interface IOption {
+    pattern: string;
+    description?: string;
+    validator?: Function;
+}
+
 export interface IActionMetadata {
     name: string;
     key: string;
     target: any;
+    options: IOption[];
 }
 
 export type TActionsMetadata = IActionMetadata[];

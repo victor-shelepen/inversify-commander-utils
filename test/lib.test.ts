@@ -11,6 +11,8 @@ import {Container} from "inversify";
 
 describe('Lib', () => {
     let strResult = '';
+    let cmd = '';
+    let options: any = {};
 
     before(() => {
         cleanUpMetadata();
@@ -20,15 +22,23 @@ describe('Lib', () => {
 
             @action('aTestAction')
             testA() {
-                strResult = 'testGroup:aTestAction'
+                strResult = 'testGroup:aTestAction';
             }
 
-            @action('bTestAction')
-            testB() {
-                strResult = 'testGroup:bTestAction'
+            @action(
+                'bTestAction <cmd>',
+                [
+                    { pattern: '-e, --exec_mode <mode>', description: 'Which exec mode to use' }
+                ]
+            )
+            testB(_cmd: string, _options: any) {
+                strResult = 'testGroup:bTestAction';
+                cmd = _cmd;
+                options = _options;
             }
         }
     });
+
     let _commander = new Command();
 
     it('Group and action metadata  in Group', () => {
@@ -41,14 +51,15 @@ describe('Lib', () => {
     });
 
     it('Build', () => {
-        _commander.parse(['node', 'file.js', 'testGroup:aTestAction']);
+        _commander.parse(['node', 'file.js', 'testGroup:aTestAction', 'someCmd']);
         expect(strResult).eq('testGroup:aTestAction');
     });
 
-    it('Create', () => {
+    it('Create, command and options', () => {
         create();
-        commander.parse(['node', 'file.js', 'testGroup:bTestAction']);
+        commander.parse(['node', 'file.js', 'testGroup:bTestAction', 'cmd', '--exec_mode', 'testing']);
         expect(strResult).eq('testGroup:bTestAction');
+        expect(options.exec_mode).eq('testing');
     });
 
 });

@@ -1,4 +1,4 @@
-import {IGroup, IGroupMetadata, TActionsMetadata, TGroupsMetadata, TYPE} from "./declaration";
+import {IGroup, IGroupMetadata, IOption, TActionsMetadata, TGroupsMetadata, TYPE} from "./declaration";
 import {METADATA_KEY} from "./constant";
 import * as commander  from "commander";
 import {Command} from  "commander";
@@ -56,14 +56,20 @@ export function registerGroups(container: Container) {
     });
 }
 
-export function build(_commander: Command, container: Container) {
+export function build(programm: Command, container: Container) {
     const groups = container.getAll<IGroup>(TYPE.Group);
     groups.forEach((groupContainer) => {
         const groupMetadata = getGroupMetadata(groupContainer);
         const actionsMetadata = getActionsMetadata(groupContainer);
         actionsMetadata.forEach((actionMetadata) => {
-            const name = groupMetadata.group + (groupMetadata.group ? ":" : "") + actionMetadata.name;
-            const command = _commander.command(name);
+            const name = groupMetadata.name + (groupMetadata.name ? ":" : "") + actionMetadata.name;
+            const command = programm.command(name);
+            if (actionMetadata.options) {
+                actionMetadata.options.forEach((option: IOption) => {
+                    command
+                        .option(option.pattern, option.description, option.validator);
+                });
+            }
             command
                 .action((...args) => {
                     groupContainer[actionMetadata.key](...args);

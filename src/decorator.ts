@@ -1,11 +1,11 @@
 import { inject, injectable, decorate } from "inversify";
 import {METADATA_KEY} from "./constant";
-import {IActionMetadata, IGroupMetadata, IHandler, TActionsMetadata, TGroupsMetadata} from "./declaration";
+import {IActionMetadata, IGroupMetadata, IHandler, IOption, TActionsMetadata, TGroupsMetadata} from "./declaration";
 
-export function group(group= "default") {
+export function group(name= "default") {
     return function (target: any) {
         let currentMetadata: IGroupMetadata = {
-            group,
+            name,
             target
         };
         decorate(injectable(), target);
@@ -32,13 +32,14 @@ export function group(group= "default") {
     };
 }
 
-export function action(name: string) {
+export function action(name: string, options: IOption[] = []) {
     return function (target: any, key: string, value: any) {
 
         let metadata: IActionMetadata = {
             key,
             name,
-            target
+            target,
+            options
         };
 
         let metadataList: TActionsMetadata = [];
