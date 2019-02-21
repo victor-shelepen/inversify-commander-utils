@@ -1,6 +1,6 @@
 {
   "name": "inversify-commander-utils",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Some utilities for the development of commander with Inversify",
   "main": "lib/index.js",
   "types": "dts/index.d.ts",
