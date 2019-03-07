@@ -32,20 +32,16 @@ Go to a project folder and link the extension from global
 ```
 
 ## Publishing
-Login
+### Login
 ```
   npm login
 ```
-Correct ```package.json``` set the current version.
-```
-  "version": "0.0.3"
-```
-Publish
-
+### Publish new version.
+Check ```package.json```, set the correct version number ```"version": "0.0.4"```.
 ```
   npm publish
 ```
 
 ## Tips
-###ts-node and linked modules
+### ts-node and linked modules
 By default ts-node does not follow on sym links. You have to use a parameter ```--preserve-symlinks```.
