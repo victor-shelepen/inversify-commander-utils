@@ -36,9 +36,14 @@ Login
 ```
   npm login
 ```
-Publish new version
+Correct ```package.json``` set the current version.
 ```
-  npm publish 0.0.3
+  "version": "0.0.3"
+```
+Publish
+
+```
+  npm publish
 ```
 
 ## Tips
