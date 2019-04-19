@@ -32,14 +32,15 @@ export function group(name= "default") {
     };
 }
 
-export function action(name: string, options: IOption[] = []) {
+export function action(name: string, options: IOption[] = [], description?: string) {
     return function (target: any, key: string, value: any) {
 
         let metadata: IActionMetadata = {
             key,
             name,
             target,
-            options
+            options,
+            description
         };
 
         let metadataList: TActionsMetadata = [];

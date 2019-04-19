@@ -3,6 +3,7 @@ import {METADATA_KEY} from "./constant";
 import * as commander  from "commander";
 import {Command} from  "commander";
 import {Container} from "inversify";
+import {parseARGV} from "./commander";
 
 export function getGroupsMetadata(): TGroupsMetadata {
     return Reflect.getMetadata(
@@ -48,7 +49,7 @@ export function registerGroups(container: Container) {
         const constructor = groupMetadata.target;
         const name = constructor.name;
         if (container.isBoundNamed(TYPE.Group, name)) {
-            throw new Error(DUPLICATED_CONTROLLER_NAME(name));
+            throw new Error(DUPLICATED_GROUP_NAME(name));
         }
         container.bind(TYPE.Group)
             .to(constructor)
@@ -64,6 +65,9 @@ export function build(programm: Command, container: Container) {
         actionsMetadata.forEach((actionMetadata) => {
             const name = groupMetadata.name + (groupMetadata.name ? ":" : "") + actionMetadata.name;
             const command = programm.command(name);
+            if (actionMetadata.description) {
+                commander.description(actionMetadata.description);
+            }
             if (actionMetadata.options) {
                 actionMetadata.options.forEach((option: IOption) => {
                     command
@@ -71,11 +75,39 @@ export function build(programm: Command, container: Container) {
                 });
             }
             command
-                .action((...args) => {
-                    groupContainer[actionMetadata.key](...args);
+                .action(async (...args) => {
+                    await groupContainer[actionMetadata.key](...args);
                 });
         });
     });
+}
+
+export async function processARGV(argv: string[], container: Container) {
+    const commandData = parseARGV(argv);
+    const groups = container.getAll<IGroup>(TYPE.Group);
+    let groupContainer;
+    let groupMetadata;
+    let actionMetadata;
+    top:
+        for (const _groupContainer of groups) {
+            const _groupMetadata = getGroupMetadata(_groupContainer);
+            const _actionsMetadata = getActionsMetadata(_groupContainer);
+            for (const _actionMetadata of _actionsMetadata) {
+                const fullCommandName = _groupMetadata.name + (_groupMetadata.name ? ":" : "") + _actionMetadata.name;
+                if (fullCommandName === commandData.name) {
+                    groupContainer = _groupContainer;
+                    groupMetadata = _groupMetadata;
+                    actionMetadata = _actionMetadata;
+                    break top;
+                }
+            }
+        }
+    if (!groupContainer || !groupMetadata || !actionMetadata) {
+        throw new Error("All parts were not fetch for future successful command procession");
+    }
+    const result = await groupContainer[actionMetadata.key](commandData);
+
+    return result;
 }
 
 export function cleanUpMetadata() {
@@ -86,5 +118,5 @@ export function cleanUpMetadata() {
     );
 }
 
-export const DUPLICATED_CONTROLLER_NAME = (name: string) =>
+export const DUPLICATED_GROUP_NAME = (name: string) =>
     `Two groups cannot have the same name: ${name}`;

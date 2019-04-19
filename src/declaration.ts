@@ -1,5 +1,7 @@
+export const name = "inversify-commander-utils";
+
 export const TYPE = {
-    Group: Symbol.for("Group"),
+    Group: Symbol.for(`${name}-Group`),
 };
 
 // @todo It is unused...
@@ -26,7 +28,8 @@ export interface IActionMetadata {
     name: string;
     key: string;
     target: any;
-    options: IOption[];
+    options?: IOption[];
+    description?: string;
 }
 
 export type TActionsMetadata = IActionMetadata[];
